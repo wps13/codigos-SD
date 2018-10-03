@@ -14,10 +14,10 @@
 #define PWM_FREQ 200 //pwm period in us
 #define A0 0   // pino A0
 #define A1 1  //pino A1
-#define led1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
-#define led2
-#define led3
-#define botao
+#define Dx1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
+#define Dx2
+#define Dx3
+#define Dx4
 
 volatile sig_atomic_t flag =1
 
@@ -79,10 +79,26 @@ void aio(){
 	valorTemp = mraa_aio_read(sensorTemp);
 
 	//fechar os pinos
-	mraa_aio_close(sensorLuz);
-	mraa_aio_close(sensorTemp);
+	//mraa_aio_close(sensorLuz);
+	//mraa_aio_close(sensorTemp);
 }
+void gpio(){
+	mraa_gpio_context led1,led2,led3,botao;
+	led1 = mraa_gpio_init(Dx1);
+	led2 = mraa_gpio_init(Dx2);
+	led3 = mraa_gpio_init(Dx3);
+	botao = mraa_gpio_init(Dx4);
+	
+	//define os leds como saída
+	mraa_gpio_dir(led1, MRAA_GPIO_OUT);
+	mraa_gpio_dir(led2, MRAA_GPIO_OUT);
+	mraa_gpio_dir(led3, MRAA_GPIO_OUT);
 
+	//para escrever no pino, basta dizer qual é e o estado
+	//mraa_gpio_write(led1,1);
+	//para fechar o pino:
+	//mraa_gpio_close(led1);
+}
 void setup(){
 	mraa_init(); //inicializa mraa
 	pwm();
