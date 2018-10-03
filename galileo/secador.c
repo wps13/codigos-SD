@@ -1,13 +1,23 @@
-#iinclude <signal.h>
+//bibliotecas padrão
+#include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+//bibliotecas do mraa
+#include "mraa.h>"
 #include "mraa/pwm.h" //necessário para pwm
 #include "mraa/aio.h" //usada para pinos analogicos
+#include "mraa/gpio.h" 
+
+//configurações para uso
 #define PWM 3
 #define PWM_FREQ 200 //pwm period in us
 #define A0 0   // pino A0
 #define A1 1  //pino A1
-
+#define led1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
+#define led2
+#define led3
+#define botao
 
 volatile sig_atomic_t flag =1
 
@@ -76,5 +86,5 @@ void aio(){
 void setup(){
 	mraa_init(); //inicializa mraa
 	pwm();
-			aio();
+	aio();
 
