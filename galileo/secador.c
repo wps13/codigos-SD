@@ -16,8 +16,8 @@
 #define A1 1  //pino A1
 #define Dx1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
 #define Dx2
-#define Dx3
-#define Dx4
+#define timer 0
+#define ciclos 0
 
 volatile sig_atomic_t flag =1
 
@@ -28,12 +28,9 @@ void sig_handler(int signum){
 	}
 }
 
-void pwm(){
+void *pwm(){
 	mraa_init();
-	mraa_result_t status = MRAA_SUCCESS;
-	mraa_pwm_context pwm;
-	float value=0.0f;
-	float output;
+	mraa_pwm_context pwm,led;
 
 	pwm = mraa_pwm_init(pwm);
 
@@ -44,23 +41,29 @@ void pwm(){
 		return EXIT_FAILURE;
 	}
 
-	status = mraa_pwm_period_us(pwm, PWM_FREQ); //periodo do pwm
+	
 	if(status != MRAA_SUCCESS)
 		goto err_exit;
-	while(flag){
-		value += 0.01f;
-		status = mraa_pwm_write(pwm,value);
-		if(status != MRAA_SUCCESS)
-			goto err_exit;
+	
+	while(){
+	//cada estado seria referente a curva gerada
+	//onde é necessário definir a duração dos ciclos com o timer
+	//manipular os pwms e suas intensidades
+	//usando mraa_pwm_write(pino,valor)
+		if(ciclos == 0) //primeiro estado : curva iniciando
+		{
+	 
+		}
+		else if(ciclos ==1){
 
-		usleep(50000);
+		}
+		else if(ciclos == 2){
+		}
+		else if(ciclos == 3){
+		}
+		else if(ciclos == 4){
+		}	
 
-		if(value >= 1.0f)
-			value=0.0f;
-
-		output = mraa_pwm_read(pwm);
-		fprintf(stdout,"pwm value is %f\n", output);
-	}
 	mraa_pwm_close(pwm);
 
 err_exit:
@@ -68,9 +71,12 @@ err_exit:
 	mraa_pwm_close(pwm);
 	mraa_deinit();
 	return EXIT_FAILURE;
+
 }
 
-void aio(){
+//função que lida com os sensores
+void *aio(){
+
 	mraa_result_t status = MRAA_SUCCESS;
 	mraa_aio_context sensorLuz, sensorTemp;
 	sensorLuz = mraa_aio_init(A0); //inicializa o sensor LDR na A0
@@ -82,25 +88,19 @@ void aio(){
 	//mraa_aio_close(sensorLuz);
 	//mraa_aio_close(sensorTemp);
 }
-void gpio(){
+void setup(){
+	mraa_init(); //inicializa mraa
+
 	mraa_gpio_context led1,led2,led3,botao;
 	led1 = mraa_gpio_init(Dx1);
-	led2 = mraa_gpio_init(Dx2);
-	led3 = mraa_gpio_init(Dx3);
 	botao = mraa_gpio_init(Dx4);
 	
-	//define os leds como saída
+	//define os led do sistema como saída
 	mraa_gpio_dir(led1, MRAA_GPIO_OUT);
-	mraa_gpio_dir(led2, MRAA_GPIO_OUT);
-	mraa_gpio_dir(led3, MRAA_GPIO_OUT);
-
+	
 	//para escrever no pino, basta dizer qual é e o estado
 	//mraa_gpio_write(led1,1);
 	//para fechar o pino:
 	//mraa_gpio_close(led1);
-}
-void setup(){
-	mraa_init(); //inicializa mraa
-	pwm();
-	aio();
+
 
