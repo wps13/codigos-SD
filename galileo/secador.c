@@ -11,11 +11,11 @@
 
 //configurações para uso
 #define PWM 3
-#define PWM_FREQ 200 //pwm period in us
 #define A0 0   // pino A0
 #define A1 1  //pino A1
 #define Dx1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
 #define Dx2
+
 #define timer 0
 #define ciclos 0
 
@@ -30,9 +30,12 @@ void sig_handler(int signum){
 
 void *pwm(){
 	mraa_init();
-	mraa_pwm_context pwm,led;
+	mraa_pwm_context pwm,ledS,ledD; //ledS = led dos sensores, ledD = led geral do sistema
+	
+	pwm = mraa_pwm_init(3); //inicia  a onda a ser usada no secador na D3
+	ledS= mraa_pwm_init(5); //inicia o led dos sensores na D5
+	ledD = mraa_pwm_init(6); //inicia led do sistema na D6
 
-	pwm = mraa_pwm_init(pwm);
 
 	//Checa se pwm foi inicializado
 	if(pwm == NULL){
