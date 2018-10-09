@@ -14,7 +14,7 @@
 #define A0 0   // pino A0
 #define A1 1  //pino A1
 #define Dx1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
-#define Dx2
+#define Dx4
 
 #define timer 0
 #define ciclos 0
