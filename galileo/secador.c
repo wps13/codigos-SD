@@ -69,7 +69,7 @@ void *pwm(){
 		else if(ciclos == 4){
 		}	
 
-	mraa_pwm_close(pwm);
+
 
 err_exit:
 	mraa_result_print(status);
