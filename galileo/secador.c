@@ -100,7 +100,7 @@ void *aio(){
 void setup(){
 	mraa_init(); //inicializa mraa
 
-	mraa_gpio_context led1,led2,led3,botao;
+	mraa_gpio_context led1,botao;
 	led1 = mraa_gpio_init(Dx1);
 	botao = mraa_gpio_init(Dx4);
 	
