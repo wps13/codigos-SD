@@ -46,10 +46,7 @@ void *pwm(){
 		mraa_deinit();
 		return EXIT_FAILURE;
 	}
-
 	
-	if(status != MRAA_SUCCESS)
-		goto err_exit;
 	
 	while(){
 	//cada estado seria referente a curva gerada
@@ -75,6 +72,8 @@ void *pwm(){
 err_exit:
 	mraa_result_print(status);
 	mraa_pwm_close(pwm);
+	mraa_pwm_close(ledS);
+	mraa_pwm_close(ledD);
 	mraa_deinit();
 	return EXIT_FAILURE;
 
@@ -95,9 +94,6 @@ void *aio(){
 	//sendo obtido ~0.3 na luminosidade maior e ~0.7 no escuro 
 	valorLuz /= vmax;
 	valorTemp /= vmax;
-	//fechar os pinos
-	//mraa_aio_close(sensorLuz);
-	//mraa_aio_close(sensorTemp);
 }
 void setup(){
 	mraa_init(); //inicializa mraa
