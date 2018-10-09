@@ -18,6 +18,9 @@
 
 #define timer 0
 #define ciclos 0
+#define valorLuz 0.0
+#define valorTemp 0.0
+#define vmax 1023
 
 volatile sig_atomic_t flag =1
 
@@ -84,9 +87,14 @@ void *aio(){
 	mraa_aio_context sensorLuz, sensorTemp;
 	sensorLuz = mraa_aio_init(A0); //inicializa o sensor LDR na A0
 	sensorTemp = mraa_aio_init(A1); //inicializa A1 como Temperatura
+
 	valorLuz = mraa_aio_read(sensorLuz);
 	valorTemp = mraa_aio_read(sensorTemp);
-
+	
+	//divide-se o valor lido por 1023, por conta do valor máximo que é lido no sensor analogico
+	//sendo obtido ~0.3 na luminosidade maior e ~0.7 no escuro 
+	valorLuz /= vmax;
+	valorTemp /= vmax;
 	//fechar os pinos
 	//mraa_aio_close(sensorLuz);
 	//mraa_aio_close(sensorTemp);
