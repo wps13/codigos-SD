@@ -21,7 +21,7 @@
 #define valorLuz 0.0
 #define valorTemp 0.0
 #define vmax 1023
-
+#define estado 0
 volatile sig_atomic_t flag =1
 
 void sig_handler(int signum){
@@ -48,14 +48,16 @@ void *pwm(){
 	}
 	
 	
-	while(){
+	while(estado){
 	//cada estado seria referente a curva gerada
 	//onde é necessário definir a duração dos ciclos com o timer
 	//manipular os pwms e suas intensidades
 	//usando mraa_pwm_write(pino,valor)
 		if(ciclos == 0) //primeiro estado : curva iniciando
 		{
-	 
+	 		mraa_pwm_write(pwm, );
+			mraa_pwm_write(ledS, );
+			mraa_pwm_write(ledD, );
 		}
 		else if(ciclos ==1){
 
