@@ -22,6 +22,7 @@
 #define valorTemp 0.0
 #define vmax 1023
 #define estado 0
+
 volatile sig_atomic_t flag =1
 
 void sig_handler(int signum){
@@ -106,10 +107,11 @@ void setup(){
 	
 	//define os led do sistema como saída
 	mraa_gpio_dir(led1, MRAA_GPIO_OUT);
+	//falta definir o botao como entrada
 	
 	//para escrever no pino, basta dizer qual é e o estado
 	//mraa_gpio_write(led1,1);
 	//para fechar o pino:
 	//mraa_gpio_close(led1);
 
-
+}
