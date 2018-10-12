@@ -113,7 +113,9 @@ void *aio(){
 	valorTemp /= vmax;
 }
 void *curva(){
-	
+	If(estado == 1){
+	}
+		
 }
 void *contadorTempo(){
 	while(timer <= 30){
@@ -148,5 +150,4 @@ void setup(){
 	//mraa_gpio_write(led1,1);
 	//para fechar o pino:
 	//mraa_gpio_close(led1);
-
 }
