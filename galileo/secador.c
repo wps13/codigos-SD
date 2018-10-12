@@ -16,12 +16,15 @@
 #define Dx1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
 #define Dx4
 
-#define timer 0
-#define ciclos 0
-#define valorLuz 0.0
-#define valorTemp 0.0
-#define vmax 1023
-#define estado 0
+#define timer 0       //variavel que controla o tempo de execução
+#define intervalo 0  //retas que compoem a curva
+#define valorLuz 0.0  //valor lido pelo sensor de luminosidade
+#define valorTemp 0.0 //valor lido pelo sensor de temperatura
+#define vmax 1023     //valor maximo lido pelos sensores 
+#define estado 0      //variavel que indica funcionamento do sistema(ligado ou desligado)
+#define curva 0.0     //valor a ser usado, somando a curva fixa com leitura dos sensores
+#define passo 0.0     //variação do passo para o pwm
+#define duty 0.0      //% a ser usada no pwm
 
 volatile sig_atomic_t flag =1
 
@@ -34,11 +37,11 @@ void sig_handler(int signum){
 
 void *pwm(){
 	mraa_init();
-	mraa_pwm_context pwm,ledS,ledD; //ledS = led dos sensores, ledD = led geral do sistema
+	mraa_pwm_context pwm,ledS1,ledS2; //ledS1 = led dos sensor de luminosidade, ledS2 = led do sensor de temperatura
 	
 	pwm = mraa_pwm_init(3); //inicia  a onda a ser usada no secador na D3
-	ledS= mraa_pwm_init(5); //inicia o led dos sensores na D5
-	ledD = mraa_pwm_init(6); //inicia led do sistema na D6
+	ledS1= mraa_pwm_init(5); //inicia o led dos sensor de luz  na D5
+	ledS2 = mraa_pwm_init(6); //inicia led do sensor de temp na D6
 
 
 	//Checa se pwm foi inicializado
@@ -54,20 +57,31 @@ void *pwm(){
 	//onde é necessário definir a duração dos ciclos com o timer
 	//manipular os pwms e suas intensidades
 	//usando mraa_pwm_write(pino,valor)
-		if(ciclos == 0) //primeiro estado : curva iniciando
+		if(intervalo == 0) //primeiro estado : curva iniciando
 		{
-	 		mraa_pwm_write(pwm, );
-			mraa_pwm_write(ledS, );
-			mraa_pwm_write(ledD, );
+	 		mraa_pwm_write(pwm, curva);
+			mraa_pwm_write(ledS1, valorLuz);
+			mraa_pwm_write(ledS2, valorTemp);
 		}
-		else if(ciclos ==1){
-
+		else if(intervalo ==1){
+			mraa_pwm_write(pwm, curva);
+			mraa_pwm_write(ledS1, valorLuz);
+			mraa_pwm_write(ledS2,valorTemp );
 		}
-		else if(ciclos == 2){
+		else if(intervalo == 2){
+			mraa_pwm_write(pwm,curva );
+			mraa_pwm_write(ledS1,valorLuz );
+			mraa_pwm_write(ledS2, valorTemp);
 		}
-		else if(ciclos == 3){
+		else if(intervalo == 3){
+			mraa_pwm_write(pwm, curva);
+			mraa_pwm_write(ledS1,valorLuz );
+			mraa_pwm_write(ledS2, valorTemp);
 		}
-		else if(ciclos == 4){
+		else if(intervalo == 4){
+			mraa_pwm_write(pwm,curva );
+			mraa_pwm_write(ledS1, valorLuz);
+			mraa_pwm_write(ledS2, valorTemp);
 		}	
 
 
@@ -98,11 +112,32 @@ void *aio(){
 	valorLuz /= vmax;
 	valorTemp /= vmax;
 }
+void *curva(){
+	
+}
+void *contadorTempo(){
+	while(timer <= 30){
+		if(timer <= 10)
+			intervalo =0;
+		else if(timer>10 && timer <=15)
+			intervalo = 1;
+		else if(timer>15 && timer <=20)
+			intervalo = 2;
+		else if(timer > 20 && timer <= 25)
+			intervalo = 3;
+		else if(timer>25 && timer <= 30)
+			intervalo =4;
+		
+		timer++;
+	}
+	if(timer == 30)
+		timer = 0;
+}
 void setup(){
 	mraa_init(); //inicializa mraa
 
 	mraa_gpio_context led1,botao;
-	led1 = mraa_gpio_init(Dx1);
+	led1 = mraa_gpio_init(Dx1); //led geral do sistema
 	botao = mraa_gpio_init(Dx4);
 	
 	//define os led do sistema como saída
