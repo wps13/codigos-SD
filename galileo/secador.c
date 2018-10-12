@@ -134,13 +134,34 @@ void *pwm()
 		{
 			if (intervalo == 0)
 			{
-				if (passo < 30)
-					passo = 3;
-				duty += passo;
+				passo = 3;
+				while(duty < 30){
+					duty += passo;
+					curva = duty + valorLuz + valorTemp
+				}
 			}
 			else if (intervalo == 1)
 			{
+				curva = 30 + valorLuz + valorTemp;
 			}
+			else if(intervalo == 2){
+				passo = 5;
+				while(duty < 65){
+					duty += passo;
+					curva = duty + valorLuz + valorTemp
+				}
+			}
+			else if(intervalo == 3){
+				curva = 30 + valorLuz + valorTemp;
+			}
+			else if(intervalo == 4){
+				passo = 13
+				while(duty > 0){
+					duty -= passo;
+					curva = duty + valorLuz + valorTemp
+				}
+			}
+
 		}
 	}
 	void *contadorTempo()
