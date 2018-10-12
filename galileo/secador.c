@@ -43,9 +43,9 @@ void *pwm(){
 	ledS2 = mraa_pwm_init(6); //inicia led do sensor de temp na D6
 	
 	//define periodo do pwm como 1s
-	mraaa_pwm_period_ms(pwm,1000); 
-	mraa_pwm_period_ms(ledS1,1000);
-	mraa_pwm_period_ms(ledS2,1000);
+	mraaa_pwm_period(pwm,1); 
+	mraa_pwm_period(ledS1,1);
+	mraa_pwm_period(ledS2,1);
 
 	//habilita pwm nos pinos
 	mraa_pwm_enable(pwm,1);
@@ -121,6 +121,15 @@ void *aio(){
 }
 void *curva(){
 	If(estado == 1){
+		if(intervalo  == 0){
+			if(passo < 30)
+			passo= 3;
+			duty+=passo;
+		}
+		else if(intervalo == 1){
+			
+		}
+		
 		
 	}
 		
