@@ -9,12 +9,11 @@
 #include "mraa/aio.h" //usada para pinos analogicos
 #include "mraa/gpio.h" 
 
-//configurações para uso
-#define PWM 3
-#define A0 0   // pino A0
+//configurações para uso dos pinos
+#define A0 0   // pino A0 
 #define A1 1  //pino A1
-#define Dx1 //escolher pinos para os leds e o botão(Dx, onde x é o num)
-#define Dx4
+#define D12 12 //pino para o led do sistema
+#define D8 8	//pino para o botão
 
 #define timer 0       //variavel que controla o tempo de execução
 #define intervalo 0  //retas que compoem a curva
@@ -42,8 +41,16 @@ void *pwm(){
 	pwm = mraa_pwm_init(3); //inicia  a onda a ser usada no secador na D3
 	ledS1= mraa_pwm_init(5); //inicia o led dos sensor de luz  na D5
 	ledS2 = mraa_pwm_init(6); //inicia led do sensor de temp na D6
+	
+	//define periodo do pwm como 1s
+	mraaa_pwm_period_ms(pwm,1000); 
+	mraa_pwm_period_ms(ledS1,1000);
+	mraa_pwm_period_ms(ledS2,1000);
 
-
+	//habilita pwm nos pinos
+	mraa_pwm_enable(pwm,1);
+	mraa_pwm_enable(ledS1,1);
+	mraa_pwm_enable(ledS2,1);
 	//Checa se pwm foi inicializado
 	if(pwm == NULL){
 		fprintf(stderr, "Inicialização do pwm falhou.\n");
@@ -114,6 +121,7 @@ void *aio(){
 }
 void *curva(){
 	If(estado == 1){
+		
 	}
 		
 }
