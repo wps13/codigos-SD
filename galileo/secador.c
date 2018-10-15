@@ -15,17 +15,17 @@
 #define A1 1   //pino A1 para sensor de temperatura
 #define D12 12 //pino para o led do sistema
 #define D8 8   //pino para o botão
-
-#define timer 0		  //variavel que controla o tempo de execução
-#define intervalo 0   //retas que compoem a curva
-#define valorLuz 0.0  //valor lido pelo sensor de luminosidade
-#define valorTemp 0.0 //valor lido pelo sensor de temperatura
 #define vmax 1023	 //valor maximo lido pelos sensores
-#define estado 0	  //variavel que indica funcionamento do sistema(ligado ou desligado)
-#define curva 0.0	 //valor a ser usado, somando a curva fixa com leitura dos sensores
-#define passo 0.0	 //variação do passo para o pwm
-#define duty 0.0	  //% a ser usada no pwm
-#define estadoBotao 0  //botão pressionado ou nao
+
+int timer= 0	;	  //variavel que controla o tempo de execução
+int intervalo =0;   //retas que compoem a curva
+float valorLuz=0.0; //valor lido pelo sensor de luminosidade
+float valorTemp=0.0; //valor lido pelo sensor de temperatura
+int estado= 0;  //variavel que indica funcionamento do sistema(ligado ou desligado)
+float valorCurva =0.0;	 //valor a ser usado, somando a curva fixa com leitura dos sensores
+float passo =0.0;	 //variação do passo para o pwm
+float duty= 0.0;	  //% a ser usada no pwm
+int estadoBotao= 0;  //botão pressionado ou nao
 
 volatile sig_atomic_t flag = 1;
 
@@ -70,33 +70,33 @@ void *pwm()
 		//a curva inicial e a leitura dos sensores
 		if (intervalo == 0) //primeiro estado : curva iniciando
 		{
-			mraa_pwm_write(pwm, curva);
-			mraa_pwm_write(ledS1,curva );
-			mraa_pwm_write(ledS2,curva );
+			mraa_pwm_write(pwm, valorCurva);
+			mraa_pwm_write(ledS1,valorCurva );
+			mraa_pwm_write(ledS2,valorCurva );
 		}
 		else if (intervalo == 1)
 		{
-			mraa_pwm_write(pwm, curva);
-			mraa_pwm_write(ledS1, curva);
-			mraa_pwm_write(ledS2, curva);
+			mraa_pwm_write(pwm, valorCurva);
+			mraa_pwm_write(ledS1, valorCurva);
+			mraa_pwm_write(ledS2, valorCurva);
 		}
 		else if (intervalo == 2)
 		{
-			mraa_pwm_write(pwm, curva);
-			mraa_pwm_write(ledS1, curva);
-			mraa_pwm_write(ledS2, curva);
+			mraa_pwm_write(pwm, valorCurva);
+			mraa_pwm_write(ledS1, valorCurva);
+			mraa_pwm_write(ledS2, valorCurva);
 		}
 		else if (intervalo == 3)
 		{
-			mraa_pwm_write(pwm, curva);
-			mraa_pwm_write(ledS1, curva);
-			mraa_pwm_write(ledS2, curva);
+			mraa_pwm_write(pwm, valorCurva);
+			mraa_pwm_write(ledS1, valorCurva);
+			mraa_pwm_write(ledS2, valorCurva);
 		}
 		else if (intervalo == 4)
 		{
-			mraa_pwm_write(pwm, curva);
-			mraa_pwm_write(ledS1,curva);
-			mraa_pwm_write(ledS2, curva);
+			mraa_pwm_write(pwm, valorCurva);
+			mraa_pwm_write(ledS1,valorCurva);
+			mraa_pwm_write(ledS2, valorCurva);
 		}
 
 	err_exit:
@@ -138,28 +138,28 @@ void *pwm()
 				passo = 3;
 				while(duty < 30){
 					duty += passo;
-					curva = duty + valorLuz + valorTemp
+					valorCurva = duty + valorLuz + valorTemp;
 				}
 			}
 			else if (intervalo == 1)
 			{
-				curva = 30 + valorLuz + valorTemp;
+				valorCurva = 30 + valorLuz + valorTemp;
 			}
 			else if(intervalo == 2){
 				passo = 5;
 				while(duty < 65){
 					duty += passo;
-					curva = duty + valorLuz + valorTemp
+					valorCurva = duty + valorLuz + valorTemp;
 				}
 			}
 			else if(intervalo == 3){
-				curva = 30 + valorLuz + valorTemp;
+				valorCurva = 30 + valorLuz + valorTemp;
 			}
 			else if(intervalo == 4){
 				passo = 13
 				while(duty > 0){
 					duty -= passo;
-					curva = duty + valorLuz + valorTemp
+					valorCurva = duty + valorLuz + valorTemp;
 				}
 			}
 
