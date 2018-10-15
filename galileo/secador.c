@@ -7,7 +7,7 @@
 #include "mraa.h>"
 #include "mraa/pwm.h" //necessário para pwm
 #include "mraa/aio.h" //usada para pinos analogicos
-#include "mraa/gpio.h"
+#include "mraa/gpio.h"//usada para os pinos digitais
 #include "pthread.h" //usada para os threads
 
 //configurações para uso dos pinos
@@ -65,10 +65,10 @@ void *pwm()
 
 	while (estado)
 	{
-		//cada estado seria referente a curva gerada
-		//onde é necessário definir a duração dos ciclos com o timer
-		//manipular os pwms e suas intensidades
-		//usando mraa_pwm_write(pino,valor)
+		//cada intervalo é referente a uma reta do grafico 
+		//assim, é possível controlar em qual parte encontra-se
+		//a execução e escrever o valor de pwm, considerando
+		//a curva inicial e a leitura dos sensores
 		if (intervalo == 0) //primeiro estado : curva iniciando
 		{
 			mraa_pwm_write(pwm, curva);
