@@ -193,10 +193,14 @@ void *pwm()
 	{
 		mraa_init(); //inicializa mraa
 
-		mraa_gpio_context led1, botao;
+		//threads a serem usadas
+		pthread_t pwmSaida,valoresCurva,contagemTempo,sensores;
+		//cria as threads com os valores padrao
+		
+				mraa_gpio_context led1, botao;
 		led1 = mraa_gpio_init(D12); //led geral do sistema
 		botao = mraa_gpio_init(D8);
-
+		
 		//define os led do sistema como saída
 		mraa_gpio_dir(led1, MRAA_GPIO_OUT);
 		//define o botao como entrada
@@ -217,7 +221,14 @@ void *pwm()
 				//indica que o sistema esta ligado
 				mraa_gpio_write(led1,1);
 				//INICIAR THREADS AQUI
-				break;
+				//thread para o pwm a ser usado no ventilador e leds
+				pthread_create(&pwmSaida,NULL,pwm,NULL);
+				//thread para a geracao da curva
+				pthread_create(&valoresCurva,NULL,curva,NULL);
+				//thread para a contagem do tempo
+				pthread_create(&contagemTempo,NULL,contadorTempo,NULL);
+				//thread para os sensores
+				pthread_create(&sensores,NULL,aio,NULL);
 			}
 		}
 	}
