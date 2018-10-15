@@ -156,7 +156,7 @@ void *pwm()
 				valorCurva = 30 + valorLuz + valorTemp;
 			}
 			else if(intervalo == 4){
-				passo = 13
+				passo = 13;
 				while(duty > 0){
 					duty -= passo;
 					valorCurva = duty + valorLuz + valorTemp;
