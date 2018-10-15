@@ -25,6 +25,7 @@
 #define curva 0.0	 //valor a ser usado, somando a curva fixa com leitura dos sensores
 #define passo 0.0	 //variação do passo para o pwm
 #define duty 0.0	  //% a ser usada no pwm
+#define estadoBotao 0  //botão pressionado ou nao
 
 volatile sig_atomic_t flag = 1
 
@@ -109,7 +110,7 @@ void *pwm()
 		return EXIT_FAILURE;
 	}
 
-	//função que lida com os sensores
+	//funcao que lida com os sensores
 	void *aio()
 	{
 
@@ -121,14 +122,15 @@ void *pwm()
 		valorLuz = mraa_aio_read(sensorLuz);
 		valorTemp = mraa_aio_read(sensorTemp);
 
-		//conversão dos valores lidos nos sensores para obtenção de valores
-		//humanamente compreensíveis
+		//conversao dos valores lidos nos sensores para obtencao de valores
+		//humanamente compreensiveis
 		if (valorTemp >= 900)
 			valorTemp = (1 - (valorTemp / vmax)) * 400;
 		else
 			valorTemp = (valorTemp / vmax) * 400;
 		valorLuz /= vmax;
 	}
+	//funcao responsavel por gerar a curva a ser usada no pwm
 	void *curva()
 	{
 		If(estado == 1)
@@ -165,6 +167,8 @@ void *pwm()
 
 		}
 	}
+	//funcao que controla o tempo de execucao
+	// e define em qual intervalo encontra-se
 	void *contadorTempo()
 	{
 		while (timer <= 30)
@@ -197,9 +201,23 @@ void *pwm()
 		mraa_gpio_dir(led1, MRAA_GPIO_OUT);
 		//define o botao como entrada
 		mraa_gpio_dir(botao, MRAA_GPIO_IN);
-		*pwm();
-		*aio();
-		*curva();
-		*contadorTempo();
+		//garante que o led esteja desligado inicialmente	
+		mraa_gpio_write(led1, 0); 
+		
+		estadoBotao = mraa_gpio_read(botao);
 
+		while(1){
+			//o botao eh pressionado quando for lido 0
+			if(!estadoBotao)//botao sendo pressionado
+			{
+				estado = 1;//sistema deve ser ligado
+			}
+			//inicia o sistema
+			else if(estado){
+				//indica que o sistema esta ligado
+				mraa_gpio_write(led1,1);
+				//INICIAR THREADS AQUI
+				break;
+			}
+		}
 	}
