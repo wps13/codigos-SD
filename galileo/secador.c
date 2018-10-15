@@ -11,8 +11,8 @@
 #include "pthread.h" //usada para os threads
 
 //configurações para uso dos pinos
-#define A0 0   // pino A0
-#define A1 1   //pino A1
+#define A0 0   // pino A0 para sensor de luminosidade
+#define A1 1   //pino A1 para sensor de temperatura
 #define D12 12 //pino para o led do sistema
 #define D8 8   //pino para o botão
 
@@ -121,13 +121,13 @@ void *pwm()
 		valorLuz = mraa_aio_read(sensorLuz);
 		valorTemp = mraa_aio_read(sensorTemp);
 
-		//divide-se o valor lido por 1023, por conta do valor máximo que é lido no sensor analogico
-		//sendo obtido ~0.3 na luminosidade maior e ~0.7 no escuro
-		if (valorLuz >= 900)
-			valorLuz = (1 - (valorLuz / vmax)) * 400;
+		//conversão dos valores lidos nos sensores para obtenção de valores
+		//humanamente compreensíveis
+		if (valorTemp >= 900)
+			valorTemp = (1 - (valorTemp / vmax)) * 400;
 		else
-			valorLuz = (valorLuz / vmax) * 400;
-		valorTemp /= vmax;
+			valorTemp = (valorTemp / vmax) * 400;
+		valorLuz /= vmax;
 	}
 	void *curva()
 	{
