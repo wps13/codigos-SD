@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 //bibliotecas do mraa
-#include "mraa.h>"
+#include "mraa.h"
 #include "mraa/pwm.h" //necessário para pwm
 #include "mraa/aio.h" //usada para pinos analogicos
 #include "mraa/gpio.h"//usada para os pinos digitais
@@ -27,16 +27,14 @@
 #define duty 0.0	  //% a ser usada no pwm
 #define estadoBotao 0  //botão pressionado ou nao
 
-volatile sig_atomic_t flag = 1
+volatile sig_atomic_t flag = 1;
 
-	void
-	sig_handler(int signum)
-{
+	void sig_handler(int signum)
+	{
 	if (signum == SIGINT)
 		fprintf(stdout, "Exiting...\n");
 	flag = 0;
-}
-}
+	}
 
 void *pwm()
 {
@@ -102,13 +100,13 @@ void *pwm()
 		}
 
 	err_exit:
-		mraa_result_print(status);
 		mraa_pwm_close(pwm);
-		mraa_pwm_close(ledS);
-		mraa_pwm_close(ledD);
+		mraa_pwm_close(ledS1);
+		mraa_pwm_close(ledS2);
 		mraa_deinit();
 		return EXIT_FAILURE;
 	}
+}
 
 	//funcao que lida com os sensores
 	void *aio()
