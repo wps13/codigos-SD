@@ -106,6 +106,7 @@ void *pwm()
 		mraa_deinit();
 		return EXIT_FAILURE;
 	}
+	pthread_exit((void *)1);
 }
 
 	//funcao que lida com os sensores
@@ -127,6 +128,7 @@ void *pwm()
 		else
 			valorTemp = (valorTemp / vmax) * 400;
 		valorLuz /= vmax;
+		pthread_exit((void *)1);
 	}
 	//funcao responsavel por gerar a curva a ser usada no pwm
 	void *curva()
@@ -164,6 +166,7 @@ void *pwm()
 			}
 
 		}
+		pthread_exit((void *)1);
 	}
 	//funcao que controla o tempo de execucao
 	// e define em qual intervalo encontra-se
@@ -186,10 +189,32 @@ void *pwm()
 		}
 		if (timer == 30)
 			timer = 0;
+		pthread_exit((void *)1);
 	}
 	void *threadCliente(){
+		struct sockaddr_in servidor, cliente;
+		int sock = socket(AF_INET, SOCK_DGRAM, 0);
+		if(sock == -1){
+		perror("socket ");
+		exit(1);
+		}
+		cliente.sin_family = AF_INET;
+		cliente.sin_port = htons(porta);
+		cliente.sin_addr.s_addr = inet_addr("10.13.111.32"); 
+		memset(cliente.sin_zero, 0, 8);
 
+		if(bind(sock, (struct sockaddr*) &servidor, sizeof(servidor)) == -1){
+		perror("bind ");
+		exit(1);
+		}
+
+		while(1){
+			sendto(sock,&valorCurva,sizeof(valorCurva),0,(struct sockaddr*) &cliente, sizeof(cliente));
+			sleep(1);
+		}
+		pthread_exit((void *)1);
 	}
+
 	void setup()
 	{
 		mraa_init(); //inicializa mraa
@@ -198,7 +223,7 @@ void *pwm()
 		pthread_t pwmSaida,valoresCurva,contagemTempo,sensores,cliente;
 		//cria as threads com os valores padrao
 		
-				mraa_gpio_context led1, botao;
+		mraa_gpio_context led1, botao;
 		led1 = mraa_gpio_init(D12); //led geral do sistema
 		botao = mraa_gpio_init(D8);
 		
@@ -221,7 +246,6 @@ void *pwm()
 			else if(estado){
 				//indica que o sistema esta ligado
 				mraa_gpio_write(led1,1);
-				//INICIAR THREADS AQUI
 				//thread para o pwm a ser usado no ventilador e leds
 				pthread_create(&pwmSaida,NULL,pwm,NULL);
 				//thread para a geracao da curva
