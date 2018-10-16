@@ -187,12 +187,15 @@ void *pwm()
 		if (timer == 30)
 			timer = 0;
 	}
+	void *threadCliente(){
+
+	}
 	void setup()
 	{
 		mraa_init(); //inicializa mraa
 
 		//threads a serem usadas
-		pthread_t pwmSaida,valoresCurva,contagemTempo,sensores;
+		pthread_t pwmSaida,valoresCurva,contagemTempo,sensores,cliente;
 		//cria as threads com os valores padrao
 		
 				mraa_gpio_context led1, botao;
@@ -227,6 +230,8 @@ void *pwm()
 				pthread_create(&contagemTempo,NULL,contadorTempo,NULL);
 				//thread para os sensores
 				pthread_create(&sensores,NULL,aio,NULL);
+				//thread para o cliente
+				pthread_create(&cliente,NULL,threadCliente,NULL);
 			}
 		}
 	}
