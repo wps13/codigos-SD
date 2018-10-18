@@ -17,7 +17,7 @@
 #define D8 8   //pino para o botao
 #define vmax 1023	 //valor maximo lido pelos sensores
 
-int timer= 0	;	  //variavel que controla o tempo de execução
+int timer= 0	;	  //variavel que controla o tempo de execucao
 int intervalo =0;   //retas que compoem a curva
 float valorLuz=0.0; //valor lido pelo sensor de luminosidade
 float valorTemp=0.0; //valor lido pelo sensor de temperatura
