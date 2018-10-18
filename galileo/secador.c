@@ -1,4 +1,4 @@
-//bibliotecas padrão
+//bibliotecas padrao
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,7 +10,7 @@
 #include "mraa/gpio.h"//usada para os pinos digitais
 #include "pthread.h" //usada para os threads
 
-//configurações para uso dos pinos
+//configuracoes para uso dos pinos
 #define A0 0   // pino A0 para sensor de luminosidade
 #define A1 1   //pino A1 para sensor de temperatura
 #define D12 12 //pino para o led do sistema
