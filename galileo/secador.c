@@ -5,7 +5,7 @@
 
 //bibliotecas do mraa
 #include "mraa.h"
-#include "mraa/pwm.h" //necessário para pwm
+#include "mraa/pwm.h" //necessario para pwm
 #include "mraa/aio.h" //usada para pinos analogicos
 #include "mraa/gpio.h"//usada para os pinos digitais
 #include "pthread.h" //usada para os threads
@@ -14,7 +14,7 @@
 #define A0 0   // pino A0 para sensor de luminosidade
 #define A1 1   //pino A1 para sensor de temperatura
 #define D12 12 //pino para o led do sistema
-#define D8 8   //pino para o botão
+#define D8 8   //pino para o botao
 #define vmax 1023	 //valor maximo lido pelos sensores
 
 int timer= 0	;	  //variavel que controla o tempo de execução
@@ -23,9 +23,9 @@ float valorLuz=0.0; //valor lido pelo sensor de luminosidade
 float valorTemp=0.0; //valor lido pelo sensor de temperatura
 int estado= 0;  //variavel que indica funcionamento do sistema(ligado ou desligado)
 float valorCurva =0.0;	 //valor a ser usado, somando a curva fixa com leitura dos sensores
-float passo =0.0;	 //variação do passo para o pwm
+float passo =0.0;	 //variacao do passo para o pwm
 float duty= 0.0;	  //% a ser usada no pwm
-int estadoBotao= 0;  //botão pressionado ou nao
+int estadoBotao= 0;  //botao pressionado ou nao
 
 volatile sig_atomic_t flag = 1;
 
@@ -54,6 +54,7 @@ void *pwm()
 	mraa_pwm_enable(pwm, 1);
 	mraa_pwm_enable(ledS1, 1);
 	mraa_pwm_enable(ledS2, 1);
+
 	//Checa se pwm foi inicializado
 	if (pwm == NULL)
 	{
@@ -64,9 +65,9 @@ void *pwm()
 
 	while (estado)
 	{
-		//cada intervalo é referente a uma reta do grafico 
-		//assim, é possível controlar em qual parte encontra-se
-		//a execução e escrever o valor de pwm, considerando
+		//cada intervalo eh referente a uma reta do grafico 
+		//assim, eh possivel controlar em qual parte encontra-se
+		//a execucao e escrever o valor de pwm, considerando
 		//a curva inicial e a leitura dos sensores
 		if (intervalo == 0) //primeiro estado : curva iniciando
 		{
