@@ -111,8 +111,6 @@ void *pwm()
 	//funcao que lida com os sensores
 	void *aio()
 	{
-
-		mraa_result_t status = MRAA_SUCCESS;
 		mraa_aio_context sensorLuz, sensorTemp;
 		sensorLuz = mraa_aio_init(A0);  //inicializa o sensor LDR na A0
 		sensorTemp = mraa_aio_init(A1); //inicializa A1 como Temperatura
