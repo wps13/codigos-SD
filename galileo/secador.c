@@ -1,31 +1,31 @@
-//bibliotecas padrão
+//bibliotecas padrao
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 //bibliotecas do mraa
 #include "mraa.h"
-#include "mraa/pwm.h" //necessário para pwm
+#include "mraa/pwm.h" //necessario para pwm
 #include "mraa/aio.h" //usada para pinos analogicos
 #include "mraa/gpio.h"//usada para os pinos digitais
 #include "pthread.h" //usada para os threads
 
-//configurações para uso dos pinos
+//configuracoes para uso dos pinos
 #define A0 0   // pino A0 para sensor de luminosidade
 #define A1 1   //pino A1 para sensor de temperatura
 #define D12 12 //pino para o led do sistema
-#define D8 8   //pino para o botão
+#define D8 8   //pino para o botao
 #define vmax 1023	 //valor maximo lido pelos sensores
 
-int timer= 0	;	  //variavel que controla o tempo de execução
+int timer= 0	;	  //variavel que controla o tempo de execucao
 int intervalo =0;   //retas que compoem a curva
 float valorLuz=0.0; //valor lido pelo sensor de luminosidade
 float valorTemp=0.0; //valor lido pelo sensor de temperatura
 int estado= 0;  //variavel que indica funcionamento do sistema(ligado ou desligado)
 float valorCurva =0.0;	 //valor a ser usado, somando a curva fixa com leitura dos sensores
-float passo =0.0;	 //variação do passo para o pwm
+float passo =0.0;	 //variacao do passo para o pwm
 float duty= 0.0;	  //% a ser usada no pwm
-int estadoBotao= 0;  //botão pressionado ou nao
+int estadoBotao= 0;  //botao pressionado ou nao
 
 volatile sig_atomic_t flag = 1;
 
@@ -54,6 +54,7 @@ void *pwm()
 	mraa_pwm_enable(pwm, 1);
 	mraa_pwm_enable(ledS1, 1);
 	mraa_pwm_enable(ledS2, 1);
+
 	//Checa se pwm foi inicializado
 	if (pwm == NULL)
 	{
@@ -64,9 +65,9 @@ void *pwm()
 
 	while (estado)
 	{
-		//cada intervalo é referente a uma reta do grafico 
-		//assim, é possível controlar em qual parte encontra-se
-		//a execução e escrever o valor de pwm, considerando
+		//cada intervalo eh referente a uma reta do grafico 
+		//assim, eh possivel controlar em qual parte encontra-se
+		//a execucao e escrever o valor de pwm, considerando
 		//a curva inicial e a leitura dos sensores
 		if (intervalo == 0) //primeiro estado : curva iniciando
 		{
@@ -106,6 +107,7 @@ void *pwm()
 		mraa_deinit();
 		return EXIT_FAILURE;
 	}
+	pthread_exit((void *)1);
 }
 
 	//funcao que lida com os sensores
@@ -125,6 +127,7 @@ void *pwm()
 		else
 			valorTemp = (valorTemp / vmax) * 400;
 		valorLuz /= vmax;
+		pthread_exit((void *)1);
 	}
 	//funcao responsavel por gerar a curva a ser usada no pwm
 	void *curva()
@@ -162,6 +165,7 @@ void *pwm()
 			}
 
 		}
+		pthread_exit((void *)1);
 	}
 	//funcao que controla o tempo de execucao
 	// e define em qual intervalo encontra-se
@@ -184,16 +188,41 @@ void *pwm()
 		}
 		if (timer == 30)
 			timer = 0;
+		pthread_exit((void *)1);
 	}
+	void *threadCliente(){
+		struct sockaddr_in servidor, cliente;
+		int sock = socket(AF_INET, SOCK_DGRAM, 0);
+		if(sock == -1){
+		perror("socket ");
+		exit(1);
+		}
+		cliente.sin_family = AF_INET;
+		cliente.sin_port = htons(porta);
+		cliente.sin_addr.s_addr = inet_addr("10.13.111.32"); 
+		memset(cliente.sin_zero, 0, 8);
+
+		if(bind(sock, (struct sockaddr*) &servidor, sizeof(servidor)) == -1){
+		perror("bind ");
+		exit(1);
+		}
+
+		while(1){
+			sendto(sock,&valorCurva,sizeof(valorCurva),0,(struct sockaddr*) &cliente, sizeof(cliente));
+			sleep(1);
+		}
+		pthread_exit((void *)1);
+	}
+
 	void setup()
 	{
 		mraa_init(); //inicializa mraa
 
 		//threads a serem usadas
-		pthread_t pwmSaida,valoresCurva,contagemTempo,sensores;
+		pthread_t pwmSaida,valoresCurva,contagemTempo,sensores,cliente;
 		//cria as threads com os valores padrao
 		
-				mraa_gpio_context led1, botao;
+		mraa_gpio_context led1, botao;
 		led1 = mraa_gpio_init(D12); //led geral do sistema
 		botao = mraa_gpio_init(D8);
 		
@@ -216,7 +245,6 @@ void *pwm()
 			else if(estado){
 				//indica que o sistema esta ligado
 				mraa_gpio_write(led1,1);
-				//INICIAR THREADS AQUI
 				//thread para o pwm a ser usado no ventilador e leds
 				pthread_create(&pwmSaida,NULL,pwm,NULL);
 				//thread para a geracao da curva
@@ -225,6 +253,8 @@ void *pwm()
 				pthread_create(&contagemTempo,NULL,contadorTempo,NULL);
 				//thread para os sensores
 				pthread_create(&sensores,NULL,aio,NULL);
+				//thread para o cliente
+				pthread_create(&cliente,NULL,threadCliente,NULL);
 			}
 		}
 	}
