@@ -8,43 +8,47 @@
 
 #include <avr/io.h> //biblioteca para os adcs
 
+uint8_t x0,x1,x2,x3,x4; //variaveis para leituras dos sensores
+
 void setup(){
 	ADMUX = 0b01000000; //seleciona avcc como referência
 	ADCSRA = 0b10000111; //habilita ad e prescaler =128
-		
+	TCCR0A = 0b10100011; //Clear OCRA na comparação,usa fast pwm
+	TCCR0B = 0b00001011; // Define OCRA como valor para comparção e prescaler = 64
+	OCRA = 0; //registrador que gera pwm
 }
 
 void leituraAio(){
 	ADMUX &= 0b01000000; //Coloca no ADC0
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	//armazenar resultado vindo do adc
+	x0 = ADC;
 
 	ADMUX |= 0b01000001; //Coloca no ADC1
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	//armazenar resultado
+	x1 = ADC;
 
 	ADMUX &= 0b01000000;//zerar admux 
 	ADMUX |= 0b01000010; //Coloca no ADC2
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	//armazenar resultado
+	x2 = ADC;
 
 	ADMUX |= 0b01000011; //Coloca no ADC3
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	//armazenar resultado
+	x3 = ADC;
 
 	ADMUX &= 0b01000000;//zerar admux 
 	ADMUX |= 0b01000100; //Coloca no ADC4
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	//armazenar resultado
+	x4 = ADC;
 }
 
 void main(){
-	//criar pwm
+	// OCRA = ? -> gera pwm 
 	//gerar somatorio
 	//criar função que gera o ganho	
 }
