@@ -7,8 +7,11 @@
  */
 
 #include <avr/io.h> //biblioteca para os adcs
+#include <stdlib.h> 
 
-uint8_t x0,x1,x2,x3,x4; //variaveis para leituras dos sensores
+float x[5]; //variaveis para leituras dos sensores
+float w[5]; //ganhos
+float y;   //valor final do pwm
 
 void setup(){
 	ADMUX = 0b01000000; //seleciona avcc como referência
@@ -22,33 +25,40 @@ void leituraAio(){
 	ADMUX &= 0b01000000; //Coloca no ADC0
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	x0 = ADC;
+	x[0] = ADC;
 
 	ADMUX |= 0b01000001; //Coloca no ADC1
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	x1 = ADC;
+	x[1] = ADC;
 
 	ADMUX &= 0b01000000;//zerar admux 
 	ADMUX |= 0b01000010; //Coloca no ADC2
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	x2 = ADC;
+	x[2] = ADC;
 
 	ADMUX |= 0b01000011; //Coloca no ADC3
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	x3 = ADC;
+	x[3] = ADC;
 
 	ADMUX &= 0b01000000;//zerar admux 
 	ADMUX |= 0b01000100; //Coloca no ADC4
 	ADCRSA |= 0b01000000; //Inicia Conversão
 	while(!(ADCRSA & 0b00010000; //Espera conversão finalizar
-	x4 = ADC;
+	x[4] = ADC;
 }
+void ganhos(){
+	srand((unsigned) time(&t));
 
+	for(int i=0;i<5;i++){
+		w[i] = (float)rand()/(float)(RAND_MAX/1.0);
+	}	
+}
 void main(){
-	// OCRA = ? -> gera pwm 
-	//gerar somatorio
-	//criar função que gera o ganho	
+	for(int i=0;i<5;i++){
+		y += w[i]*x[i]; 
+	}
+	OCRA = y; // gera pwm 	
 }
