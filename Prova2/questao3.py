@@ -1,4 +1,3 @@
-import mraa
 import sys
 import serial
 
